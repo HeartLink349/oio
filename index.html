@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ملف قضية: Basmala 🚨❤️</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Tajawal:wght@400;700;900&display=swap');
+
+        :root {
+            --primary: #ffcc00;
+            --secondary: #ff0033;
+            --blue-siren: #0066ff;
+            --bg-color: #111111;
+            --text: #f0f0f0;
+            --text-dim: #aaaaaa;
+            --danger: #ff0033;
+            --glow-yellow: 0 0 15px rgba(255, 204, 0, 0.6);
+            --glow-red: 0 0 20px rgba(255, 0, 51, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text);
+            overflow-x: hidden; 
+            overflow-y: hidden;
+            height: 100dvh; 
+        }
+
+        #siren-bg {
+            position: fixed;
+            width: 100vw; height: 100vh;
+            top: 0; left: 0;
+            z-index: 0;
+            pointer-events: none;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(255, 0, 51, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 85% 50%, rgba(0, 102, 255, 0.15) 0%, transparent 50%);
+            animation: sirenFlash 2s infinite alternate ease-in-out;
+        }
+        @keyframes sirenFlash {
+            0% { opacity: 0.5; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .warning-tape {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 10px;
+            background: repeating-linear-gradient(45deg, var(--primary), var(--primary) 15px, #000 15px, #000 30px);
+            z-index: 999;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+        }
+        .warning-tape.bottom { top: auto; bottom: 0; }
+
+        /* صفحة الدخول */
+        #intro-screen {
+            position: fixed; 
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 100;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 1s, transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 20px;
+            background: rgba(17, 17, 17, 0.95);
+        }
+
+        .auth-box {
+            text-align: center; padding: 40px 30px;
+            background: #1a1a1a;
+            border: 2px solid var(--primary);
+            border-radius: 15px; 
+            width: 100%; max-width: 420px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(255, 204, 0, 0.1);
+            max-height: 90vh; overflow-y: auto;
+            position: relative;
+        }
+        
+        .auth-box h1 { margin: 0 0 10px 0; font-size: clamp(26px, 6vw, 32px); font-weight: 900; color: var(--primary); letter-spacing: 1px; text-shadow: 2px 2px 0px #000; }
+        .auth-box p { font-size: clamp(13px, 4vw, 15px); color: var(--text-dim); margin-bottom: 25px; font-weight: 700; line-height: 1.6;}
+
+        .magic-input {
+            width: 100%; padding: 18px; border-radius: 8px;
+            background: #000; border: 2px dashed var(--primary);
+            color: var(--primary); text-align: center; font-size: 16px; font-weight: 900;
+            margin: 20px 0; outline: none; transition: 0.3s;
+        }
+        .magic-input::placeholder { color: rgba(255, 204, 0, 0.4); }
+        .magic-input:focus { border-style: solid; box-shadow: var(--glow-yellow); background: rgba(255, 204, 0, 0.05); }
+
+        .magic-btn {
+            background: var(--primary);
+            color: #000; border: none; width: 100%; padding: 18px;
+            border-radius: 8px; font-size: clamp(16px, 4vw, 18px); font-weight: 900; cursor: pointer;
+            transition: 0.3s; box-shadow: var(--glow-yellow);
+        }
+        .magic-btn:hover { background: #fff; box-shadow: 0 0 25px #fff; transform: translateY(-2px); }
+        .magic-btn:active { transform: scale(0.96); }
+
+        /* العالم الخاص (المحتوى الأصلي) */
+        #main-world {
+            display: none; opacity: 0; position: relative; z-index: 10;
+            padding: 40px 15px 100px; max-width: 800px; margin: 0 auto;
+            transition: opacity 2s ease;
+        }
+
+        .section-title {
+            text-align: center; margin: 50px 0 30px;
+            font-size: clamp(24px, 6vw, 30px); font-weight: 900; color: white;
+            text-shadow: 2px 2px 0px #000, 0 0 10px var(--danger);
+            border-bottom: 3px double var(--secondary); padding-bottom: 10px;
+            display: inline-block; width: 100%;
+        }
+
+        /* العداد (عمر المتهمة) */
+        .neon-counter { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); 
+            gap: 15px; margin-bottom: 60px; 
+            width: 100%;
+        }
+        .time-block {
+            background: #1a1a1a; border: 1px solid #333;
+            padding: 20px 10px; border-radius: 10px; text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: 0.3s;
+            display: flex; flex-direction: column; justify-content: center;
+            border-top: 3px solid var(--primary); 
+            position: relative;
+            overflow: hidden;
+        }
+        .time-block::before {
+            content: 'WANTED'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 30px; color: rgba(255,0,51,0.05); font-weight: 900; pointer-events: none;
+        }
+        .time-block:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: var(--glow-yellow); }
+        .time-num { display: block; font-size: clamp(28px, 6vw, 38px); font-weight: 900; color: var(--text); text-shadow: 0 0 10px rgba(255,255,255,0.3); z-index: 1;}
+        .time-label { font-size: clamp(12px, 3vw, 14px); color: var(--primary); font-weight: 900; margin-top: 5px; z-index: 1;}
+
+        @media (max-width: 600px) {
+            .neon-counter { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+            .time-block { padding: 15px 5px; }
+        }
+
+        /* أدلة الجريمة (صور + نصوص طويلة) */
+        .polaroid-gallery {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 30px;
+            padding: 20px 0 40px; perspective: 1000px;
+        }
+
+        .polaroid-container { transform-style: preserve-3d; transition: transform 0.1s ease-out; }
+
+        .polaroid {
+            background: #eee; padding: 15px 15px 25px 15px;
+            border-radius: 2px; box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            width: 100%; max-width: 320px; 
+            transition: box-shadow 0.3s, transform 0.5s;
+            cursor: pointer; backface-visibility: hidden;
+            position: relative;
+            display: flex; flex-direction: column;
+        }
+        .polaroid::after {
+            content: 'EVIDENCE'; position: absolute; bottom: 12px; right: 10px;
+            color: var(--secondary); border: 2px solid var(--secondary); padding: 2px 5px;
+            font-size: 11px; font-weight: 900; transform: rotate(-15deg); opacity: 0.7; font-family: 'Courier New', Courier, monospace;
+        }
+        
+        /* تعديل الصور لتظهر كاملة بدون قص */
+        .polaroid img { 
+            width: 100%; 
+            height: auto; 
+            aspect-ratio: unset; 
+            object-fit: contain; 
+            background: #222; 
+            border: 1px solid #999; 
+            margin-bottom: 12px; 
+        }
+        .polaroid .caption { 
+            text-align: center; 
+            color: #111; 
+            font-weight: 800; 
+            font-size: 12px; 
+            line-height: 1.5; 
+            margin-top: 10px; 
+            direction: rtl;
+            background: rgba(255,255,200,0.8);
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        .polaroid:nth-child(1) { transform: rotate(-2deg); }
+        .polaroid:nth-child(2) { transform: rotate(3deg); }
+
+        @media (hover: hover) {
+            .polaroid-gallery:hover .polaroid-container:not(:hover) { opacity: 0.6; transform: scale(0.95) translateZ(-30px); }
+            .polaroid-container:hover { z-index: 10; }
+            .polaroid-container:hover .polaroid { box-shadow: 0 30px 60px rgba(255, 0, 51, 0.4); }
+        }
+
+        /* العقوبات */
+        .promises { display: flex; flex-direction: column; gap: 15px; margin: 50px auto; max-width: 480px; width: 100%; }
+        .promise-card {
+            background: #1a1a1a; 
+            border-right: 4px solid var(--secondary); 
+            border-left: 1px solid #333; border-top: 1px solid #333; border-bottom: 1px solid #333;
+            padding: 20px 20px; border-radius: 8px;
+            display: flex; align-items: center; gap: 18px; transition: 0.3s;
+            position: relative; overflow: hidden;
+        }
+        .promise-card:hover { background: rgba(255, 0, 51, 0.1); border-right-color: var(--primary); transform: translateX(-10px); box-shadow: var(--glow-red); }
+        .promise-card i { font-size: 24px; color: var(--primary); min-width: 35px; text-align: center; }
+        .promise-card span { font-size: clamp(14px, 4vw, 16px); font-weight: 700; color: white; line-height: 1.6; }
+
+        /* مطرقة القاضي */
+        .moon-btn-container { text-align: center; margin-top: 80px; }
+        .moon-btn {
+            width: 100px; height: 100px; border-radius: 50%;
+            background: #1a1a1a; border: 3px solid var(--secondary);
+            color: var(--secondary); font-size: 40px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 30px rgba(255, 0, 51, 0.3), inset 0 0 20px rgba(255, 0, 51, 0.1);
+            transition: 0.5s; 
+            animation: bounceGavel 2s infinite alternate;
+            margin: 0 auto;
+        }
+        @keyframes bounceGavel { 
+            0% { transform: translateY(0) rotate(0deg); } 
+            100% { transform: translateY(-15px) rotate(-10deg); } 
+        }
+        
+        .moon-btn:hover { background: var(--secondary); color: #fff; box-shadow: var(--glow-red); transform: scale(1.1); animation: none; }
+
+        /* نطق الحكم (الرسالة) */
+        #secret-message {
+            position: fixed; 
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 999999; 
+            display: none; 
+            opacity: 0; 
+            align-items: center; justify-content: center;
+            transition: opacity 0.5s; padding: 20px;
+        }
+        .msg-box {
+            background: #111; border: 2px solid var(--primary);
+            padding: 40px 25px; border-radius: 15px; width: 100%; max-width: 550px; text-align: center;
+            box-shadow: var(--glow-yellow);
+            position: relative; max-height: 90vh; overflow-y: auto; scrollbar-width: none;
+        }
+        .msg-box .blueprint-header {
+            display: flex; justify-content: space-between; border-bottom: 2px dashed var(--primary);
+            padding-bottom: 10px; margin-bottom: 25px; color: var(--primary); font-weight: 900;
+        }
+        .msg-box i { font-size: clamp(35px, 8vw, 45px); color: var(--secondary); margin-bottom: 15px; display: block; animation: heartbeat 1.5s infinite; }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        
+        #typewriter-text {
+            font-size: clamp(15px, 4.5vw, 18px); line-height: 2; color: var(--text); font-weight: 700;
+            min-height: 120px; text-align: justify;
+        }
+        #typewriter-text::after { content: ' ⚖️'; animation: blinkCursor 0.6s infinite; color: var(--primary); font-size: 20px;}
+        @keyframes blinkCursor { 50% { opacity: 0; } }
+
+        /* مؤشر الموسيقى العائم */
+        .music-indicator {
+            position: fixed; top: 25px; right: 15px; z-index: 1000;
+            background: #111; padding: 10px 18px; border-radius: 8px;
+            border: 1px solid var(--primary);
+            display: none; align-items: center; gap: 10px; cursor: pointer;
+            transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .music-indicator:hover { background: var(--primary); }
+        .music-indicator:hover span { color: #000; }
+        .music-indicator:hover .bar { background: #000; }
+        .playing-bars { display: flex; gap: 3px; height: 16px; align-items: flex-end; }
+        .bar { width: 4px; background: var(--primary); animation: sound 0.4s infinite alternate; }
+        .bar:nth-child(2) { animation-delay: 0.15s; }
+        .bar:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes sound { 0% { height: 4px; } 100% { height: 16px; } }
+
+        /* واجهة التحقيق (القبض + السؤال + جاري التحقيق) */
+        .investigation-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+        .investigation-card {
+            background: #1a1a1a;
+            border: 3px solid var(--secondary);
+            border-radius: 20px;
+            padding: 30px 20px;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            box-shadow: var(--glow-red);
+            animation: fadeInUp 0.5s ease;
+        }
+        .investigation-card i {
+            font-size: 50px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        .investigation-card h2 {
+            color: var(--secondary);
+            font-size: clamp(22px, 6vw, 28px);
+            font-weight: 900;
+            margin: 10px 0;
+        }
+        .investigation-card p {
+            color: #ddd;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .love-question {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .love-btn {
+            background: #222;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 12px 30px;
+            font-size: 20px;
+            font-weight: 900;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.3s;
+            min-width: 100px;
+        }
+        .love-btn.yes {
+            background: var(--primary);
+            color: black;
+        }
+        .love-btn.no {
+            border-color: #666;
+            color: #aaa;
+        }
+        .love-btn.yes:hover {
+            transform: scale(1.05);
+            box-shadow: var(--glow-yellow);
+        }
+        .love-btn.no:hover {
+            background: #330000;
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+        .next-hint {
+            font-size: 14px;
+            color: #777;
+            margin-top: 20px;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="warning-tape"></div>
+    <div class="warning-tape bottom"></div>
+
+    <audio id="loveSong" loop src="https://e.top4top.io/m_37535anxc1.mp3"></audio>
+
+    <div id="siren-bg"></div>
+
+    <div class="music-indicator" id="music-btn" onclick="toggleMusic()">
+        <div class="playing-bars">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        </div>
+        <span style="font-size: 13px; font-weight: 900; color: var(--primary); transition: 0.3s;">🔪♥</span>
+    </div>
+
+    <section id="intro-screen">
+        <div class="auth-box animate__animated animate__fadeInUp">
+            <i class="fa-solid fa-handcuffs" style="font-size: clamp(45px, 12vw, 60px); color: var(--primary); margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--primary));"></i>
+            <h1>ملف قضية: Basmala 🚨</h1>
+            <p>ممنوع الدخول لغير المصرح لهم!<br>التهمة: سرقه قلب🔪🙂</p>
+            
+            <input type="password" id="passInput" class="magic-input" placeholder="Password">
+            <button class="magic-btn" onclick="enterWorld()">فتح السجل الجنائي 📂</button>
+        </div>
+    </section>
+
+    <section id="main-world">
+        <header style="text-align:center; padding: 20px 0 10px;">
+            <div style="color: var(--secondary); font-size: 14px; font-weight: 900; letter-spacing: 2px;">CONFIDENTIAL FILE #001</div>
+            <h1 class="main-title" style="font-size: clamp(28px, 8vw, 36px); margin: 10px 0 0; color: white; font-weight: 900;">محكمة الحب ❤️</h1>
+        </header>
+
+        <h2 class="section-title animate__animated animate__fadeInDown"><i class="fa-solid fa-cake-candles"></i> عمر المتهمة 🙈♥🔪</h2>
+        <div class="neon-counter">
+            <div class="time-block"><span id="years" class="time-num">0</span><span class="time-label">سنة</span></div>
+            <div class="time-block"><span id="months" class="time-num">0</span><span class="time-label">شهر</span></div>
+            <div class="time-block"><span id="days" class="time-num">0</span><span class="time-label">يوم</span></div>
+            <div class="time-block"><span id="hours" class="time-num">0</span><span class="time-label">ساعة</span></div>
+            <div class="time-block"><span id="mins" class="time-num">0</span><span class="time-label">دقيقة</span></div>
+            <div class="time-block"><span id="secs" class="time-num">0</span><span class="time-label">ثانية</span></div>
+        </div>
+
+        <h2 class="section-title"><i class="fa-solid fa-camera"></i> دليل و اثبات😂🔪</h2>
+        <div class="polaroid-gallery">
+            <div class="polaroid-container" onmousemove="tiltPolaroid(event, this)" onmouseleave="resetPolaroid(this)">
+                <div class="polaroid">
+                    <img src="https://j.top4top.io/p_3753vmr2e1.jpg" alt="Evidence 1">
+                    <div class="caption">"بصفتي القاضي والمجني عليكي و'الفيتامين' شخصياً 😂💊.. وبعد فحص الدليل المرفق (سكرين شوت الواتساب)، ثبت باعتراف المتهمة 'Basmala ' بتعاطي جرعات مكثفة من 'فيتامين M' (اللي هو أنا) كمقوي عام للقلب والروح ❤️🫂. وبناءً عليه، حكمت المحكمة حضورياً بإلزام المتهمة بتعاطي هذا الفيتامين مدى الحياة، .. رفعت الجلسة 🚨❤️."</div>
+                </div>
+            </div>
+            <div class="polaroid-container" onmousemove="tiltPolaroid(event, this)" onmouseleave="resetPolaroid(this)">
+                <div class="polaroid">
+                    <img src="https://i.top4top.io/p_3753so3if1.jpg" alt="Evidence 2">
+                    <div class="caption">حكمت المحكمة حضورياً بقرار نهائي غير قابل للطعن ⚖️.. بعد مراجعة كافة الأحراز والأدلة المرفقة (شاتات الواتساب) 📂، ثبت بما لا يدع مجالاً للشك إن المتهمة 'Basmala ' مش بس مدمنة 'فيتامين M' 😂💊، لا دي كمان مسؤولة عن حالات تسمم عاطفي بضحكتها، واختطاف قلبي مع سبق الإصرار والترصد. وحيث أن الشواهد الجديدة أثبتت تورطها في 'دلع مفرط' وكلام يدوب الحجر.. قررت المحكمة الآتي: يُحكم عليكي بالسجن المؤبد  في ذمة قلبي، . رُفعت الجلسة.. وبحبك يا أحلى نصيبة في دنيتي! ❤️🚨💍</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title"><i class="fa-solid fa-scale-balanced"></i> العقوبات الإلزامية المفروضة عليكي</h2>
+        <div class="promises">
+            <div class="promise-card"><i class="fa-solid fa-lock"></i> <span>الحكم بالسجن المؤبد الانفرادي جوه قلبي، وممنوع الإفراج عنك أو الزيارة لأي حد غيري.</span></div>
+            <div class="promise-card"><i class="fa-solid fa-ban"></i> <span>مصادرة أي زعل أو نكد وتشميعه بالشمع الأحمر فوراً من غير نقاش.</span></div>
+            <div class="promise-card"><i class="fa-solid fa-money-bill-wave"></i> <span>دفع غرامة يومية مقدارها (بحبك) تتسدد كل يوم الصبح وأول ما تصحي. 💍</span></div>
+        </div>
+
+        <div class="moon-btn-container">
+            <p style="color: var(--text-dim); font-weight: 900; margin-bottom: 15px; font-size: clamp(13px, 4vw, 15px);">اضغطي بالمطرقة للمطالبة بالحكم النهائي ⚖️</p>
+            <button class="moon-btn" onclick="openMessage()"><i class="fa-solid fa-gavel"></i></button>
+        </div>
+    </section>
+
+    <div id="secret-message">
+        <div class="msg-box animate__animated animate__zoomIn">
+            <div class="blueprint-header">
+                <span>CASE STATUS: CLOSED</span>
+                <span>VERDICT: ETERNAL LOVE</span>
+            </div>
+            <i class="fa-solid fa-heart"></i>
+            <h2 style="color: var(--primary); margin: 0 0 15px 0; font-size: clamp(24px, 7vw, 28px); font-weight: 900; text-align: center;">نطق الحكم.. ⚖️❤️</h2>
+            
+            <p id="typewriter-text" dir="rtl"></p>
+
+            <!-- تم إزالة السطر المكرر "رفعت الجلسة.. وبحبك يا حبيبة ❤️" -->
+            <button onclick="closeMessage()" style="background:var(--primary); border:none; color:#000; margin-top:30px; padding: 12px; width: 100%; border-radius: 8px; font-size:16px; font-weight:900; cursor:pointer; transition: 0.3s; box-shadow: var(--glow-yellow);">[ علم ويُنفذ فوراً ]</button>
+        </div>
+    </div>
+
+    <script>
+        // الرسالة الجديدة كما طلبت
+        const rawMessageText = "⚖️ محكمة الحب العليا - الدائرة \"قلبي\"\nملف القضية رقم (1) - جنايات خطف قلوب\n\nبعد الاطلاع على أوراق القضية، وسماع شهادة نبضات قلبي، وتفريغ كاميرات \"الصدفة\" اللي جمعتنا، قررت المحكمة الآتي:\n\nأولاً: تُثبت التهمة على المتهمة (Basmala) بأنها قامت بـ \"سطو مسلح\" على مشاعري، واستخدمت سلاح \"الضحكة القتّالة\" و \"العيون اللي بتدوخ\"، مما أدى إلى فقدان كامل للسيطرة على عقلي.\n\nثانياً: بما إن المجني عليه (أنا) واقع لشوشته ومش عايز يرجع قلبه تاني، فقد قررنا الآتي:\n\nالحكم المؤبد: تُسجن المتهمة داخل \"قلبي  ويُمنع عنها أي خروج، مع إلغاء حق الاستئناف لأن الحكم ده \"نهائي \".\n\nتكليف القضيه : تُكلف المتهمة بإسكات أي نكد بـ (3 بوسات) على الأقل، وتوزيع (و حضن ) يومياً كتعويض عن الأضرار النفسية اللي سببتها بجمالها.\n\nالمصادرة: تُصادر كل همومك وزعلك، وتتحول فوراً لمسؤوليتي أنا، وممنوع ترجعيها تاني.\n\nثالثاً: يُمنع بتاتاً استخدام \"بوز البطة\" أو \"التكشيرة\"، او ظهور عل وجهك او تاثير مضيقه  وأي مخالفة هيتم الرد عليها بـ \"انا بحبك \" لحد ما تزهقي وتضحكي.\n\nالقاضي (اللي ميت في دباديبك): مصطفى 👮‍♂️❤️\nرُفعت الجلسة.. والقلب ما يريد!";
+        
+        // تاريخ الميلاد 17/12/2011
+        const birthDate = new Date("2011-12-17T00:00:00");
+
+        // دوال التحقيق (تم تعديل سؤال الحب: لا يشترط "أه" فقط، أي إجابة تكمل)
+        async function showArrestMessage() {
+            return new Promise((resolve) => {
+                const overlay = document.createElement('div');
+                overlay.className = 'investigation-overlay';
+                overlay.innerHTML = `
+                    <div class="investigation-card animate__animated animate__zoomIn">
+                        <i class="fa-solid fa-handcuffs"></i>
+                        <h2>🚨 تم القبض على المتهمة 🚨</h2>
+                        <p style="font-size:22px; color:var(--primary);">وجاري التحقيق 😂♥🔪</p>
+                        <div class="next-hint">⚡ جاري تجهيز ملف القضية...</div>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+                setTimeout(() => {
+                    overlay.remove();
+                    resolve();
+                }, 2000);
+            });
+        }
+
+        function showLoveQuestion() {
+            return new Promise((resolve) => {
+                const overlay = document.createElement('div');
+                overlay.className = 'investigation-overlay';
+                overlay.innerHTML = `
+                    <div class="investigation-card animate__animated animate__fadeInUp">
+                        <i class="fa-solid fa-question-circle"></i>
+                        <h2 style="color:var(--primary);">بتحبيني ؟ 😂</h2>
+                        <div class="love-question">
+                            <div class="love-btn yes" onclick="answerLoveQuestion('yes')">أه 😍</div>
+                            <div class="love-btn no" onclick="answerLoveQuestion('no')">لا 🙄</div>
+                        </div>
+                        <div class="next-hint">💬 اختاري أي إجابة .. القضية هتكمل على كل حال 😂❤️</div>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+                
+                window.answerLoveQuestion = (ans) => {
+                    const card = overlay.querySelector('.investigation-card');
+                    if(ans === 'yes') {
+                        // اختيار "أه" نغلق مباشرة
+                        overlay.remove();
+                        resolve(true);
+                    } else {
+                        // اختيار "لا": نعرض رسالة مضحكة ثم نكمل بعد ثانية
+                        card.innerHTML = `
+                            <i class="fa-solid fa-face-grin-tongue-squint"></i>
+                            <h2 style="color:var(--secondary);">ههههه واضح إنك بتمزحي! 😂</h2>
+                            <p style="color:white;">التحقيق هيستمر رغمًا عنكِ .. أنا عارف إنك بتحبيني فشخ 🤍</p>
+                            <div class="next-hint">يتم إعادة توجيهك لمحكمة الحب...</div>
+                        `;
+                        setTimeout(() => {
+                            overlay.remove();
+                            resolve(true);  // نكمل التحقيق بغض النظر
+                        }, 1500);
+                    }
+                };
+            });
+        }
+
+        function showInvestigating() {
+            return new Promise((resolve) => {
+                const overlay = document.createElement('div');
+                overlay.className = 'investigation-overlay';
+                overlay.innerHTML = `
+                    <div class="investigation-card animate__animated animate__pulse">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <h2 style="color:var(--secondary);">جاري التحقيق 🙈♥</h2>
+                        <p style="font-size:18px;">النيابة العامة تدرس أدلة الحب... 💌</p>
+                        <div class="next-hint">✋ استنظري شوية...</div>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+                setTimeout(() => {
+                    overlay.remove();
+                    resolve();
+                }, 1800);
+            });
+        }
+
+        async function enterWorld() {
+            const pass = document.getElementById('passInput').value;
+            const btn = document.querySelector('.magic-btn');
+
+            if(pass === "17/12/2011") {
+                // إخفاء شاشة الدخول
+                document.getElementById('intro-screen').style.opacity = '0';
+                document.getElementById('intro-screen').style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    document.getElementById('intro-screen').style.display = 'none';
+                }, 800);
+
+                // 1. رسالة القبض
+                await showArrestMessage();
+                // 2. سؤال الحب (أي إجابة مقبولة)
+                await showLoveQuestion();
+                // 3. جاري التحقيق
+                await showInvestigating();
+                
+                // 4. إظهار المحتوى الأصلي مع تشغيل الموسيقى والعداد
+                document.getElementById('main-world').style.display = 'block';
+                document.getElementById('music-btn').style.display = 'flex';
+                document.body.style.overflowY = 'auto';
+                
+                setTimeout(() => {
+                    document.getElementById('main-world').style.opacity = '1';
+                }, 100);
+                
+                // تشغيل الموسيقى
+                const audio = document.getElementById('loveSong');
+                audio.play().catch(e => console.log("Audio play blocked"));
+                
+                // بدء العداد (عمر المتهمة)
+                startAgeCounter();
+            } else {
+                btn.innerHTML = "غلط يا فاشلة.. ركزي 😂❌";
+                btn.style.background = "var(--secondary)";
+                btn.style.boxShadow = "var(--glow-red)";
+                setTimeout(() => { 
+                    btn.innerHTML = "فتح السجل الجنائي 📂"; 
+                    btn.style.background = "var(--primary)";
+                    btn.style.boxShadow = "var(--glow-yellow)";
+                }, 2000);
+            }
+        }
+
+        function toggleMusic() {
+            const audio = document.getElementById('loveSong');
+            const bars = document.querySelector('.playing-bars');
+            if(audio.paused) {
+                audio.play();
+                bars.style.opacity = "1";
+            } else {
+                audio.pause();
+                bars.style.opacity = "0.3";
+            }
+        }
+
+        // حساب العمر بدقة من تاريخ الميلاد (17/12/2011) مع مرور الوقت الحقيقي
+        function startAgeCounter() {
+            const ids = ['years', 'months', 'days', 'hours', 'mins', 'secs'];
+            function updateAge() {
+                const now = new Date();
+                let years = now.getFullYear() - birthDate.getFullYear();
+                let months = now.getMonth() - birthDate.getMonth();
+                let days = now.getDate() - birthDate.getDate();
+                let hours = now.getHours() - birthDate.getHours();
+                let mins = now.getMinutes() - birthDate.getMinutes();
+                let secs = now.getSeconds() - birthDate.getSeconds();
+
+                // ضبط القيم السالبة
+                if (secs < 0) {
+                    secs += 60;
+                    mins--;
+                }
+                if (mins < 0) {
+                    mins += 60;
+                    hours--;
+                }
+                if (hours < 0) {
+                    hours += 24;
+                    days--;
+                }
+                if (days < 0) {
+                    // الشهر السابق
+                    let previousMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                    days += previousMonth.getDate();
+                    months--;
+                }
+                if (months < 0) {
+                    months += 12;
+                    years--;
+                }
+
+                // تحديث العناصر
+                const elements = {
+                    years: years,
+                    months: months,
+                    days: days,
+                    hours: hours,
+                    mins: mins,
+                    secs: secs
+                };
+                ids.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el && el.innerText != elements[id]) {
+                        el.innerText = elements[id];
+                        el.style.color = "#fff";
+                        setTimeout(() => el.style.color = "var(--text)", 150);
+                    }
+                });
+            }
+            updateAge();
+            setInterval(updateAge, 1000);
+        }
+
+        // تأثيرات البولارويد
+        function tiltPolaroid(e, container) {
+            if(window.innerWidth <= 768) return;
+            const polaroid = container.querySelector('.polaroid');
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left; 
+            const y = e.clientY - rect.top;  
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((centerY - y) / centerY) * 15;
+            const rotateY = ((x - centerX) / centerX) * 15;
+            polaroid.style.transform = `scale(1.05) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        }
+
+        function resetPolaroid(container) {
+            if(window.innerWidth <= 768) return;
+            const polaroid = container.querySelector('.polaroid');
+            polaroid.style.transform = `scale(1) rotateX(0deg) rotateY(0deg)`;
+        }
+
+        function openMessage() {
+            const msgPage = document.getElementById('secret-message');
+            const textContainer = document.getElementById('typewriter-text');
+            
+            msgPage.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
+            textContainer.innerHTML = ""; 
+
+            setTimeout(() => { 
+                msgPage.style.opacity = '1'; 
+                setTimeout(() => {
+                    typeWriter(rawMessageText, textContainer);
+                }, 600);
+            }, 50);
+        }
+
+        function closeMessage() {
+            const msgPage = document.getElementById('secret-message');
+            msgPage.style.opacity = '0';
+            document.body.style.overflow = 'auto'; 
+            setTimeout(() => { msgPage.style.display = 'none'; }, 800);
+            
+            if(window.typewriterInterval) clearInterval(window.typewriterInterval);
+        }
+
+        function typeWriter(text, container) {
+            let i = 0;
+            if(window.typewriterInterval) clearInterval(window.typewriterInterval); 
+            
+            window.typewriterInterval = setInterval(() => {
+                if (i < text.length) {
+                    container.innerHTML += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(window.typewriterInterval); 
+                }
+            }, 45); 
+        }
+    </script>
+</body>
+</html>
